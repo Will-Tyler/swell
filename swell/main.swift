@@ -8,5 +8,24 @@
 
 import Foundation
 
-print("Hello, World!")
 
+while true {
+	Shell.prompt()
+
+	if let line = readLine() {
+		let process = Process()
+		let pipe = Pipe()
+
+		process.executableURL = URL(fileURLWithPath: "/bin/ls")
+		process.standardOutput = pipe.fileHandleForWriting
+
+		try process.run()
+		process.waitUntilExit()
+
+		let data = pipe.fileHandleForReading.availableData
+		let string = String(data: data, encoding: .utf8)!
+
+		print(string)
+	}
+
+}
