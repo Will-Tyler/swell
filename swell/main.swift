@@ -32,15 +32,25 @@ fileprivate func lookUp(executableName name: String) -> String? {
 	return nil
 }
 
+signal(SIGINT, SIG_IGN)
+
+let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
+
+sigintSource.setEventHandler(handler: {
+	print()
+	print("Ouch!")
+	prompt()
+})
+
+sigintSource.resume()
+
 while true {
 	prompt()
 
 	if let line = readLine() {
-		let statement = Statement(stringLiteral: line)
-		let commands = statement.commands
+		let statement = Statement(line)
 		var input: FileHandle
 		var output: FileHandle
-		var lastProcess: Process?
 
 		if let inputRedirectPath = statement.inputRedirect {
 			let fileURL = URL(fileURLWithPath: inputRedirectPath)
@@ -57,7 +67,7 @@ while true {
 
 			process.standardInput = input
 
-			if (index == commands.count-1) {
+			if (index == statement.commands.count-1) {
 				if let outputRedirectPath = statement.outputRedirect {
 					let fileURL = URL(fileURLWithPath: outputRedirectPath)
 
@@ -68,17 +78,10 @@ while true {
 					let fileHandle = try FileHandle(forWritingTo: fileURL)
 
 					process.standardOutput = fileHandle
-					process.terminationHandler = { process in
-						if let output = process.standardOutput as? FileHandle {
-							output.closeFile()
-						}
-					}
 				}
 				else {
 					output = FileHandle.standardOutput
 				}
-
-				lastProcess = process
 			}
 			else {
 				let pipe = Pipe()
@@ -87,14 +90,18 @@ while true {
 				input = pipe.fileHandleForReading
 
 				process.standardOutput = output
-				process.terminationHandler = { process in
-					if let output = process.standardOutput as? FileHandle {
-						output.closeFile()
-					}
+			}
+
+			process.terminationHandler = { process in
+				if let input = process.standardInput as? FileHandle, input !== FileHandle.standardInput {
+					input.closeFile()
+				}
+				if let output = process.standardOutput as? FileHandle, output !== FileHandle.standardOutput {
+					output.closeFile()
 				}
 			}
 
-			if (command.name == "cd") {
+			if command.name == "cd" {
 				if command.args.count > 0 {
 					FileManager.default.changeCurrentDirectoryPath(command.args[1])
 				}
@@ -106,15 +113,20 @@ while true {
 					}
 				}
 			}
+			else if command.name == "exit" {
+				exit(0)
+			}
 			else if let executablePath = lookUp(executableName: command.name) {
 				process.arguments = command.args
 				process.executableURL = URL(fileURLWithPath: executablePath)
 
 				try process.run()
+
+				if index == statement.commands.count-1 {
+					process.waitUntilExit()
+				}
 			}
 		}
-
-		lastProcess?.waitUntilExit()
 	}
 
 }

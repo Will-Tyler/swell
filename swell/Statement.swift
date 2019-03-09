@@ -9,15 +9,13 @@
 import Foundation
 
 
-struct Statement: ExpressibleByStringLiteral {
-	
-	typealias StringLiteralType = String
+struct Statement {
 
 	let commands: [Command]
 	let outputRedirect: String?
 	let inputRedirect: String?
 
-	init(stringLiteral string: String) {
+	init(_ string: String) {
 		var tokens = string.split(separator: " ").map(String.init)
 
 		if let lessThanIndex = tokens.firstIndex(of: "<") {
