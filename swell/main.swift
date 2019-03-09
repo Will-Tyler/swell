@@ -30,23 +30,49 @@ while true {
 	Shell.prompt()
 
 	if let line = readLine() {
-		let args = line.split(separator: " ").map(String.init)
-		let process = Process()
-		let pipe = Pipe()
+		let commands = line.split(separator: "|").map(String.init)
+		var input = FileHandle.standardInput
+		var output = FileHandle.standardOutput
+		var lastProcess: Process?
 
-		if let executablePath = lookUp(executableName: args[0]) {
-			process.arguments = Array(args[1...])
-			process.executableURL = URL(fileURLWithPath: executablePath)
-			process.standardOutput = pipe.fileHandleForWriting
+		for (index, var command) in commands.enumerated() {
+			let process = Process()
 
-			try process.run()
-			process.waitUntilExit()
+			process.standardInput = input
+			command = command.trimmingCharacters(in: .whitespacesAndNewlines)
 
-			let data = pipe.fileHandleForReading.availableData
-			let string = String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines)
+			if (index == commands.count-1) {
+				output = FileHandle.standardOutput
+				lastProcess = process
+			}
+			else {
+				let pipe = Pipe()
 
-			print(string)
+				output = pipe.fileHandleForWriting
+				input = pipe.fileHandleForReading
+			}
+
+			process.standardOutput = output
+
+			if index < commands.count-1 {
+				process.terminationHandler = { process in
+					if let output = process.standardOutput as? FileHandle {
+						output.closeFile()
+					}
+				}
+			}
+
+			let args = command.split(separator: " ").map(String.init)
+
+			if let executablePath = lookUp(executableName: args[0]) {
+				process.arguments = Array(args[1...])
+				process.executableURL = URL(fileURLWithPath: executablePath)
+
+				try process.run()
+			}
 		}
+
+		lastProcess?.waitUntilExit()
 	}
 
 }
