@@ -9,6 +9,12 @@
 import Foundation
 
 
+fileprivate func prompt() {
+	if isatty(0) > 0 {
+		print("swell", terminator: " ")
+	}
+}
+
 fileprivate func lookUp(executableName name: String) -> String? {
 	let fileManager = FileManager.default
 	let environment = ProcessInfo.processInfo.environment
@@ -27,13 +33,24 @@ fileprivate func lookUp(executableName name: String) -> String? {
 }
 
 while true {
-	Shell.prompt()
+	prompt()
 
 	if let line = readLine() {
 		let commands = line.split(separator: "|").map(String.init)
-		var input = FileHandle.standardInput
+		var input: FileHandle
 		var output = FileHandle.standardOutput
 		var lastProcess: Process?
+		let tokens = commands.split(separator: " ")
+
+		if let lessThanIndex = tokens.firstIndex(where: { $0.first ?? "" == "<" }) {
+			let fileURL = URL(fileURLWithPath: tokens[lessThanIndex+1].first!)
+			let fileHandle = try FileHandle(forReadingFrom: fileURL)
+
+			input = fileHandle
+		}
+		else {
+			input = FileHandle.standardInput
+		}
 
 		for (index, var command) in commands.enumerated() {
 			let process = Process()
