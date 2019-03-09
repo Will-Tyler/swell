@@ -64,6 +64,19 @@ while true {
 
 			let args = command.split(separator: " ").map(String.init)
 
+			if (args[0] == "cd") {
+				if args.count > 1 {
+					FileManager.default.changeCurrentDirectoryPath(args[1])
+				}
+				else {
+					let enviroment = ProcessInfo.processInfo.environment
+
+					if let home = enviroment["HOME"] {
+						FileManager.default.changeCurrentDirectoryPath(home)
+					}
+				}
+			}
+
 			if let executablePath = lookUp(executableName: args[0]) {
 				process.arguments = Array(args[1...])
 				process.executableURL = URL(fileURLWithPath: executablePath)
