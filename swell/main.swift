@@ -32,23 +32,36 @@ fileprivate func lookUp(executableName name: String) -> String? {
 	return nil
 }
 
+fileprivate var runningProcesses = Set<Process>()
+
 signal(SIGINT, SIG_IGN)
 
 let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
 
 sigintSource.setEventHandler(handler: {
+	var didTerminateProcesses = false
+
+	for process in runningProcesses {
+		process.terminate()
+		didTerminateProcesses = true
+	}
+
 	print()
-	print("Ouch!")
-	prompt()
+
+	if !didTerminateProcesses {
+		prompt()
+		fflush(stdout)
+	}
 })
 
-sigintSource.resume()
+sigintSource.activate()
 
 while true {
 	prompt()
 
 	if let line = readLine() {
 		let statement = Statement(line)
+		let commands = statement.commands
 		var input: FileHandle
 		var output: FileHandle
 
@@ -62,12 +75,13 @@ while true {
 			input = FileHandle.standardInput
 		}
 
-		for (index, command) in statement.commands.enumerated() {
+		for (index, command) in commands.enumerated() {
+			let isLastCommand = index == commands.count-1
 			let process = Process()
 
 			process.standardInput = input
 
-			if (index == statement.commands.count-1) {
+			if isLastCommand {
 				if let outputRedirectPath = statement.outputRedirect {
 					let fileURL = URL(fileURLWithPath: outputRedirectPath)
 
@@ -93,11 +107,16 @@ while true {
 			}
 
 			process.terminationHandler = { process in
+				runningProcesses.remove(process)
+
 				if let input = process.standardInput as? FileHandle, input !== FileHandle.standardInput {
 					input.closeFile()
 				}
 				if let output = process.standardOutput as? FileHandle, output !== FileHandle.standardOutput {
 					output.closeFile()
+				}
+				if let error = process.standardError as? FileHandle, error !== FileHandle.standardError {
+					error.closeFile()
 				}
 			}
 
@@ -117,16 +136,16 @@ while true {
 				exit(0)
 			}
 			else if let executablePath = lookUp(executableName: command.name) {
-				process.arguments = command.args
 				process.executableURL = URL(fileURLWithPath: executablePath)
+				process.arguments = command.args
 
 				try process.run()
+				runningProcesses.insert(process)
 
-				if index == statement.commands.count-1 {
+				if isLastCommand {
 					process.waitUntilExit()
 				}
 			}
 		}
 	}
-
 }

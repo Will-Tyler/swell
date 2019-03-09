@@ -7,3 +7,5 @@ swell is a shell written in Swift.
  - [x] Pipe commands.
  - [x] Change directory using cd
  - [x] Input redirection
+ - [x] SIGINT handling
+ - [x] Quit the shell using exit command.
