@@ -38,12 +38,12 @@ while true {
 	if let line = readLine() {
 		let commands = line.split(separator: "|").map(String.init)
 		var input: FileHandle
-		var output = FileHandle.standardOutput
+		var output: FileHandle
 		var lastProcess: Process?
-		let tokens = commands.split(separator: " ")
+		let tokens = line.split(separator: " ").map(String.init)
 
-		if let lessThanIndex = tokens.firstIndex(where: { $0.first ?? "" == "<" }) {
-			let fileURL = URL(fileURLWithPath: tokens[lessThanIndex+1].first!)
+		if let lessThanIndex = tokens.firstIndex(where: { $0.first == "<" }) {
+			let fileURL = URL(fileURLWithPath: tokens[lessThanIndex+1])
 			let fileHandle = try FileHandle(forReadingFrom: fileURL)
 
 			input = fileHandle
@@ -59,7 +59,26 @@ while true {
 			command = command.trimmingCharacters(in: .whitespacesAndNewlines)
 
 			if (index == commands.count-1) {
-				output = FileHandle.standardOutput
+				if let greaterThanIndex = tokens.firstIndex(where: { $0.first == ">" }) {
+					let fileURL = URL(fileURLWithPath: tokens[greaterThanIndex+1])
+
+					if !FileManager.default.fileExists(atPath: fileURL.path) {
+						FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
+					}
+
+					let fileHandle = try FileHandle(forWritingTo: fileURL)
+
+					process.standardOutput = fileHandle
+					process.terminationHandler = { process in
+						if let output = process.standardOutput as? FileHandle {
+							output.closeFile()
+						}
+					}
+				}
+				else {
+					output = FileHandle.standardOutput
+				}
+
 				lastProcess = process
 			}
 			else {
@@ -67,11 +86,8 @@ while true {
 
 				output = pipe.fileHandleForWriting
 				input = pipe.fileHandleForReading
-			}
 
-			process.standardOutput = output
-
-			if index < commands.count-1 {
+				process.standardOutput = output
 				process.terminationHandler = { process in
 					if let output = process.standardOutput as? FileHandle {
 						output.closeFile()
@@ -93,8 +109,7 @@ while true {
 					}
 				}
 			}
-
-			if let executablePath = lookUp(executableName: args[0]) {
+			else if let executablePath = lookUp(executableName: args[0]) {
 				process.arguments = Array(args[1...])
 				process.executableURL = URL(fileURLWithPath: executablePath)
 
