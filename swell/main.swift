@@ -36,14 +36,14 @@ while true {
 	prompt()
 
 	if let line = readLine() {
-		let commands = line.split(separator: "|").map(String.init)
+		let statement = Statement(stringLiteral: line)
+		let commands = statement.commands
 		var input: FileHandle
 		var output: FileHandle
 		var lastProcess: Process?
-		let tokens = line.split(separator: " ").map(String.init)
 
-		if let lessThanIndex = tokens.firstIndex(where: { $0.first == "<" }) {
-			let fileURL = URL(fileURLWithPath: tokens[lessThanIndex+1])
+		if let inputRedirectPath = statement.inputRedirect {
+			let fileURL = URL(fileURLWithPath: inputRedirectPath)
 			let fileHandle = try FileHandle(forReadingFrom: fileURL)
 
 			input = fileHandle
@@ -52,15 +52,14 @@ while true {
 			input = FileHandle.standardInput
 		}
 
-		for (index, var command) in commands.enumerated() {
+		for (index, command) in statement.commands.enumerated() {
 			let process = Process()
 
 			process.standardInput = input
-			command = command.trimmingCharacters(in: .whitespacesAndNewlines)
 
 			if (index == commands.count-1) {
-				if let greaterThanIndex = tokens.firstIndex(where: { $0.first == ">" }) {
-					let fileURL = URL(fileURLWithPath: tokens[greaterThanIndex+1])
+				if let outputRedirectPath = statement.outputRedirect {
+					let fileURL = URL(fileURLWithPath: outputRedirectPath)
 
 					if !FileManager.default.fileExists(atPath: fileURL.path) {
 						FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
@@ -95,11 +94,9 @@ while true {
 				}
 			}
 
-			let args = command.split(separator: " ").map(String.init)
-
-			if (args[0] == "cd") {
-				if args.count > 1 {
-					FileManager.default.changeCurrentDirectoryPath(args[1])
+			if (command.name == "cd") {
+				if command.args.count > 0 {
+					FileManager.default.changeCurrentDirectoryPath(command.args[1])
 				}
 				else {
 					let enviroment = ProcessInfo.processInfo.environment
@@ -109,8 +106,8 @@ while true {
 					}
 				}
 			}
-			else if let executablePath = lookUp(executableName: args[0]) {
-				process.arguments = Array(args[1...])
+			else if let executablePath = lookUp(executableName: command.name) {
+				process.arguments = command.args
 				process.executableURL = URL(fileURLWithPath: executablePath)
 
 				try process.run()

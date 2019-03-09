@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4CF17AC322331AD900AFED56 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF17AC222331AD900AFED56 /* main.swift */; };
+		4CF17AF12233735700AFED56 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF17AF02233735700AFED56 /* Statement.swift */; };
+		4CF17AF3223374B700AFED56 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF17AF2223374B700AFED56 /* Command.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +29,8 @@
 		4CF17AC222331AD900AFED56 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4CF17ACB22332D0F00AFED56 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4CF17ACC223347A500AFED56 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4CF17AF02233735700AFED56 /* Statement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
+		4CF17AF2223374B700AFED56 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,8 @@
 			isa = PBXGroup;
 			children = (
 				4CF17AC222331AD900AFED56 /* main.swift */,
+				4CF17AF2223374B700AFED56 /* Command.swift */,
+				4CF17AF02233735700AFED56 /* Statement.swift */,
 			);
 			path = swell;
 			sourceTree = "<group>";
@@ -124,6 +130,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CF17AC322331AD900AFED56 /* main.swift in Sources */,
+				4CF17AF12233735700AFED56 /* Statement.swift in Sources */,
+				4CF17AF3223374B700AFED56 /* Command.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
