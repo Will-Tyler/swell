@@ -11,17 +11,20 @@ import Foundation
 
 setenv("SHELL", "swell", 1)
 
+let fileManager = FileManager.default
+var environment: [String: String] {
+	get {
+		return ProcessInfo.processInfo.environment
+	}
+}
+
 fileprivate func prompt() {
 	if isatty(0) > 0 {
 		print("swell", terminator: " ")
 	}
 }
 
-let fileManager = FileManager.default
-
 fileprivate func lookUp(executableName name: String) -> String? {
-	let environment = ProcessInfo.processInfo.environment
-
 	if let path = environment["PATH"] {
 		let paths = path.split(separator: ":").map(String.init)
 
@@ -41,7 +44,7 @@ fileprivate var runningProcesses = Set<Process>()
 
 signal(SIGINT, SIG_IGN)
 
-fileprivate let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
+let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
 
 sigintSource.setEventHandler(handler: {
 	var didTerminateProcesses = false

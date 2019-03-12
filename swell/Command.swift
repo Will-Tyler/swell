@@ -19,7 +19,7 @@ struct Command {
 
 		var args = Array(tokens[1...])
 
-		if let home = ProcessInfo.processInfo.environment["HOME"] {
+		if let home = environment["HOME"] {
 			for (index, arg) in args.enumerated() {
 				args[index] = arg.replacingOccurrences(of: "~", with: home)
 			}
