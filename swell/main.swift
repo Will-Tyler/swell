@@ -135,14 +135,14 @@ while true {
 
 		switch command.name {
 		case "cd":
-			if command.args.count > 0 {
-				FileManager.default.changeCurrentDirectoryPath(command.args[1])
+			if let destination = command.args.first {
+				fileManager.changeCurrentDirectoryPath(destination)
 			}
 			else {
 				let enviroment = ProcessInfo.processInfo.environment
 
 				if let home = enviroment["HOME"] {
-					FileManager.default.changeCurrentDirectoryPath(home)
+					fileManager.changeCurrentDirectoryPath(home)
 				}
 			}
 

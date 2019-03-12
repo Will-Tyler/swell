@@ -16,7 +16,16 @@ struct Command {
 
 	init(_ tokens: [String]) {
 		self.name = tokens[0]
-		self.args = Array(tokens[1...])
+
+		var args = Array(tokens[1...])
+
+		if let home = ProcessInfo.processInfo.environment["HOME"] {
+			for (index, arg) in args.enumerated() {
+				args[index] = arg.replacingOccurrences(of: "~", with: home)
+			}
+		}
+
+		self.args = args
 	}
 
 }
