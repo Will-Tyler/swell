@@ -9,23 +9,28 @@
 import Foundation
 
 
+setenv("SHELL", "swell", 1)
+
 fileprivate func prompt() {
 	if isatty(0) > 0 {
 		print("swell", terminator: " ")
 	}
 }
 
+let fileManager = FileManager.default
+
 fileprivate func lookUp(executableName name: String) -> String? {
-	let fileManager = FileManager.default
 	let environment = ProcessInfo.processInfo.environment
-	let path = environment["PATH"]!
-	let paths = path.split(separator: ":").map(String.init)
 
-	for path in paths {
-		let hypotheticalPath = URL(fileURLWithPath: path).appendingPathComponent(name).path
+	if let path = environment["PATH"] {
+		let paths = path.split(separator: ":").map(String.init)
 
-		if fileManager.fileExists(atPath: hypotheticalPath) {
-			return hypotheticalPath
+		for path in paths {
+			let hypotheticalPath = URL(fileURLWithPath: path).appendingPathComponent(name).path
+
+			if fileManager.fileExists(atPath: hypotheticalPath) {
+				return hypotheticalPath
+			}
 		}
 	}
 
@@ -36,7 +41,7 @@ fileprivate var runningProcesses = Set<Process>()
 
 signal(SIGINT, SIG_IGN)
 
-let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
+fileprivate let sigintSource = DispatchSource.makeSignalSource(signal: SIGINT)
 
 sigintSource.setEventHandler(handler: {
 	var didTerminateProcesses = false
@@ -85,8 +90,8 @@ while true {
 				if let outputRedirectPath = statement.outputRedirect {
 					let fileURL = URL(fileURLWithPath: outputRedirectPath)
 
-					if !FileManager.default.fileExists(atPath: fileURL.path) {
-						FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
+					if !fileManager.fileExists(atPath: fileURL.path) {
+						fileManager.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
 					}
 
 					let fileHandle = try FileHandle(forWritingTo: fileURL)
@@ -120,7 +125,8 @@ while true {
 				}
 			}
 
-			if command.name == "cd" {
+			switch command.name {
+			case "cd":
 				if command.args.count > 0 {
 					FileManager.default.changeCurrentDirectoryPath(command.args[1])
 				}
@@ -131,19 +137,29 @@ while true {
 						FileManager.default.changeCurrentDirectoryPath(home)
 					}
 				}
-			}
-			else if command.name == "exit" {
+
+			case "exit":
 				exit(0)
-			}
-			else if let executablePath = lookUp(executableName: command.name) {
-				process.executableURL = URL(fileURLWithPath: executablePath)
-				process.arguments = command.args
 
-				try process.run()
-				runningProcesses.insert(process)
+			case "source":
+				if command.args.count == 1 {
+					let path = command.args.first!
 
-				if isLastCommand {
-					process.waitUntilExit()
+					if let content = fileManager.contents(atPath: path) {
+					}
+				}
+
+			default:
+				if let executablePath = lookUp(executableName: command.name) {
+					process.executableURL = URL(fileURLWithPath: executablePath)
+					process.arguments = command.args
+
+					try process.run()
+					runningProcesses.insert(process)
+
+					if isLastCommand {
+						process.waitUntilExit()
+					}
 				}
 			}
 		}
