@@ -153,30 +153,34 @@ while true {
 			exit(0)
 
 		case "source":
-			if command.args.count == 1 {
-				let path = command.args.first!
+			if command.args.count == 1, let path = command.args.first, let content = fileManager.contents(atPath: path), let string = String(data: content, encoding: .utf8) {
+				let sourceLines = string.split(separator: "\n").map(String.init)
 
-				if let content = fileManager.contents(atPath: path), let string = String(data: content, encoding: .utf8) {
-					let sourceLines = string.split(separator: "\n").map(String.init)
-
-					inputLines.append(contentsOf: sourceLines)
-				}
+				inputLines.append(contentsOf: sourceLines)
+			}
+			else {
+				print("Usage: source <file>")
 			}
 
 		default:
-			if let executablePath = lookUp(executableName: command.name) {
+			if fileManager.fileExists(atPath: command.name) {
+				process.executableURL = URL(fileURLWithPath: command.name)
+			}
+			else if let executablePath = lookUp(executableName: command.name) {
 				process.executableURL = URL(fileURLWithPath: executablePath)
-				process.arguments = command.args
-
-				try process.run()
-				runningProcesses.insert(process)
-
-				if isLastCommand {
-					process.waitUntilExit()
-				}
 			}
 			else {
 				print("Could not find \(command.name)...")
+				continue
+			}
+
+			process.arguments = command.args
+
+			try process.run()
+			runningProcesses.insert(process)
+
+			if isLastCommand {
+				process.waitUntilExit()
 			}
 		}
 	}
