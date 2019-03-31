@@ -9,3 +9,4 @@ swell is a shell written in Swift.
  - [x] Input redirection
  - [x] SIGINT handling
  - [x] Quit the shell using exit command.
+ - [x] Implement source command
