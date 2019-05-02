@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4C2FAAD3227A7D3700E001E0 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FAAD2227A7D3700E001E0 /* String.swift */; };
 		4C2FAAD5227A82E800E001E0 /* LexerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FAAD4227A82E800E001E0 /* LexerError.swift */; };
+		4C2FAAEF227A871D00E001E0 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FAAEE227A871D00E001E0 /* LexerTests.swift */; };
 		4CA997802279154600176907 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA9977F2279154600176907 /* Lexer.swift */; };
 		4CA99782227915ED00176907 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA99781227915ED00176907 /* Token.swift */; };
 		4CF17AC322331AD900AFED56 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF17AC222331AD900AFED56 /* main.swift */; };
@@ -31,6 +32,9 @@
 /* Begin PBXFileReference section */
 		4C2FAAD2227A7D3700E001E0 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		4C2FAAD4227A82E800E001E0 /* LexerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerError.swift; sourceTree = "<group>"; };
+		4C2FAAE6227A86D600E001E0 /* swellTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = swellTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C2FAAEA227A86D600E001E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C2FAAEE227A871D00E001E0 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
 		4CA9977F2279154600176907 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		4CA99781227915ED00176907 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		4CF17ABF22331AD900AFED56 /* swell */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swell; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +46,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4C2FAAE3227A86D600E001E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CF17ABC22331AD900AFED56 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -52,12 +63,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C2FAAE7227A86D600E001E0 /* swellTests */ = {
+			isa = PBXGroup;
+			children = (
+				4C2FAAEE227A871D00E001E0 /* LexerTests.swift */,
+				4C2FAAEA227A86D600E001E0 /* Info.plist */,
+			);
+			path = swellTests;
+			sourceTree = "<group>";
+		};
 		4CF17AB622331AD900AFED56 = {
 			isa = PBXGroup;
 			children = (
 				4CF17ACB22332D0F00AFED56 /* .gitignore */,
 				4CF17ACC223347A500AFED56 /* README.md */,
 				4CF17AC122331AD900AFED56 /* swell */,
+				4C2FAAE7227A86D600E001E0 /* swellTests */,
 				4CF17AC022331AD900AFED56 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				4CF17ABF22331AD900AFED56 /* swell */,
+				4C2FAAE6227A86D600E001E0 /* swellTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,6 +109,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4C2FAAE5227A86D600E001E0 /* swellTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C2FAAEB227A86D600E001E0 /* Build configuration list for PBXNativeTarget "swellTests" */;
+			buildPhases = (
+				4C2FAAE2227A86D600E001E0 /* Sources */,
+				4C2FAAE3227A86D600E001E0 /* Frameworks */,
+				4C2FAAE4227A86D600E001E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = swellTests;
+			productName = swellTests;
+			productReference = 4C2FAAE6227A86D600E001E0 /* swellTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		4CF17ABE22331AD900AFED56 /* swell */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4CF17AC622331AD900AFED56 /* Build configuration list for PBXNativeTarget "swell" */;
@@ -110,10 +149,13 @@
 		4CF17AB722331AD900AFED56 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Will Tyler";
 				TargetAttributes = {
+					4C2FAAE5227A86D600E001E0 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
 					4CF17ABE22331AD900AFED56 = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
@@ -134,11 +176,30 @@
 			projectRoot = "";
 			targets = (
 				4CF17ABE22331AD900AFED56 /* swell */,
+				4C2FAAE5227A86D600E001E0 /* swellTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		4C2FAAE4227A86D600E001E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		4C2FAAE2227A86D600E001E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C2FAAEF227A871D00E001E0 /* LexerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CF17ABB22331AD900AFED56 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -156,6 +217,42 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		4C2FAAEC227A86D600E001E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 83A9Z5EMT8;
+				INFOPLIST_FILE = swellTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = willtyler.swellTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4C2FAAED227A86D600E001E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 83A9Z5EMT8;
+				INFOPLIST_FILE = swellTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = willtyler.swellTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		4CF17AC422331AD900AFED56 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -294,6 +391,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4C2FAAEB227A86D600E001E0 /* Build configuration list for PBXNativeTarget "swellTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C2FAAEC227A86D600E001E0 /* Debug */,
+				4C2FAAED227A86D600E001E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4CF17ABA22331AD900AFED56 /* Build configuration list for PBXProject "swell" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
